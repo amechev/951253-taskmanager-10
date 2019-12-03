@@ -1,4 +1,6 @@
-export const createSiteMenuTemplate = () => {
+import {createElement} from "../utils";
+
+const createSiteMenuTemplate = () => {
   return (
     `<section class="main__control control container">
         <h1 class="control__title">TASKMANAGER</h1>
@@ -33,3 +35,25 @@ export const createSiteMenuTemplate = () => {
       </section>`
   );
 };
+
+export default class SiteMenu {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createSiteMenuTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
