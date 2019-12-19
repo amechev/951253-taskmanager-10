@@ -1,8 +1,8 @@
 import BoardComponent from './components/board.js';
-import FilterComponent from './components/filter.js';
+import FilterController from './controllers/filters.js';
 import SiteMenuComponent from './components/menu.js';
+import TasksModel from './models/tasks.js';
 import {generateTasks} from './mock/task.js';
-import {generateFilters} from './mock/filter.js';
 import BoardController from './controllers/board.js';
 import {render, RenderPosition} from './utils/render.js';
 
@@ -10,15 +10,27 @@ const TASK_COUNT = 22;
 
 const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
-render(siteHeaderElement, new SiteMenuComponent(), RenderPosition.BEFOREEND);
+const siteMenuComponent = new SiteMenuComponent();
+// Быстрое решение для подписки на клик по кнопке.
+// Это противоречит нашей архитектуре работы с DOM-элементами, но это временное решение.
+// Совсем скоро мы создадим полноценный компонент для работы с меню.
+siteMenuComponent.getElement().querySelector(`.control__label--new-task`)
+  .addEventListener(`click`, () => {
+    boardController.createTask();
+  });
 
-const filters = generateFilters();
-render(siteMainElement, new FilterComponent(filters), RenderPosition.BEFOREEND);
+render(siteHeaderElement, siteMenuComponent, RenderPosition.BEFOREEND);
+
+const tasks = generateTasks(TASK_COUNT);
+const tasksModel = new TasksModel();
+tasksModel.setTasks(tasks);
+
+const filterController = new FilterController(siteMainElement, tasksModel);
+filterController.render();
 
 const boardComponent = new BoardComponent();
 render(siteMainElement, boardComponent, RenderPosition.BEFOREEND);
 
-const tasks = generateTasks(TASK_COUNT);
-const boardController = new BoardController(boardComponent);
+const boardController = new BoardController(boardComponent, tasksModel);
 
-boardController.render(tasks);
+boardController.render();
