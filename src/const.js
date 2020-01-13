@@ -15,7 +15,6 @@ export const COLORS = [
 ];
 
 export const DAYS = [`mo`, `tu`, `we`, `th`, `fr`, `sa`, `su`];
-
 export const FilterType = {
   ALL: `all`,
   ARCHIVE: `archive`,
